@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zuri Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0a1628;--accent:#1a6bff;--sky:#3b9eff;--gold:#f0b429;--white:#f4f8ff;--muted:#8aa0c0;--card:#0f1e3d;--border:rgba(59,158,255,0.18);--green:#22c55e;--red:#ef4444}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.08em;margin-bottom:.3rem}
+.login-logo span{color:var(--gold)}
+.login-sub{color:var(--muted);font-size:.85rem;margin-bottom:2rem}
+.login-box input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:.85rem 1rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:1rem;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:1rem}
+.login-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,107,255,.15)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--sky));color:#fff;border:none;padding:.9rem;border-radius:5px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,107,255,.4)}
+.login-err{color:var(--red);font-size:.82rem;margin-top:.8rem;display:none}
+.login-err.show{display:block}
+
+/* LAYOUT */
+.dashboard{display:none}
+.dashboard.show{display:flex}
+.sidebar{width:240px;min-height:100vh;background:rgba(15,30,61,.95);border-right:1px solid var(--border);padding:1.5rem 0;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column}
+.sb-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;padding:0 1.5rem;margin-bottom:2rem}
+.sb-logo span{color:var(--gold)}
+.sb-label{font-family:'Rajdhani',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:0 1.5rem;margin-bottom:.5rem;margin-top:1rem}
+.sb-item{display:flex;align-items:center;gap:.8rem;padding:.7rem 1.5rem;cursor:pointer;transition:background .2s,color .2s;color:var(--muted);font-size:.9rem;font-weight:500;border-left:3px solid transparent}
+.sb-item:hover{background:rgba(59,158,255,.06);color:var(--white)}
+.sb-item.active{background:rgba(26,107,255,.12);color:var(--white);border-left-color:var(--accent)}
+.sb-item .ic{font-size:1rem;width:20px;text-align:center}
+.sb-bottom{margin-top:auto;padding:1.5rem}
+.sb-logout{width:100%;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);padding:.7rem;border-radius:5px;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.sb-logout:hover{background:rgba(239,68,68,.2)}
+.sb-mode{background:rgba(26,107,255,.08);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:0 1rem 1rem;font-size:.8rem}
+.sb-mode .mode-label{font-family:'Rajdhani',sans-serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.mode-badge{display:inline-block;padding:.25rem .8rem;border-radius:2rem;font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mode-badge.sandbox{background:rgba(240,180,41,.15);color:var(--gold);border:1px solid rgba(240,180,41,.3)}
+.mode-badge.live{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+
+/* MAIN */
+.main{margin-left:240px;padding:2rem;flex:1;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em}
+.page-title span{color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:1rem;font-size:.85rem;color:var(--muted)}
+
+/* CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem;margin-bottom:2.5rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.stat-card .s-label{font-family:'Rajdhani',sans-serif;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.stat-card .s-value{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--white);line-height:1}
+.stat-card .s-sub{font-size:.76rem;color:var(--muted);margin-top:.3rem}
+.stat-card.green .s-value{color:var(--green)}
+.stat-card.gold .s-value{color:var(--gold)}
+.stat-card.blue .s-value{color:var(--sky)}
+
+/* SECTION CARD */
+.sec-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.8rem;margin-bottom:1.5rem}
+.sec-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.04em;margin-bottom:.3rem}
+.sec-card .sc-sub{color:var(--muted);font-size:.83rem;margin-bottom:1.5rem;line-height:1.6}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.fg{margin-bottom:1rem}
+label{display:block;font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sky);margin-bottom:.4rem;font-weight:600}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:.75rem 1rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,107,255,.12)}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+select option{background:var(--navy)}
+textarea{resize:vertical;min-height:80px}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;margin-bottom:.8rem}
+.toggle-info .tl{font-size:.9rem;font-weight:500;color:var(--white)}
+.toggle-info .td{font-size:.76rem;color:var(--muted);margin-top:.15rem}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:24px;cursor:pointer;transition:.3s}
+.slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:var(--muted);border-radius:50%;transition:.3s}
+.toggle input:checked+.slider{background:var(--accent)}
+.toggle input:checked+.slider::before{transform:translateX(20px);background:#fff}
+
+/* SAVE BTN */
+.save-btn{background:linear-gradient(135deg,var(--accent),var(--sky));color:#fff;border:none;padding:.8rem 2rem;border-radius:5px;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,107,255,.4)}
+.save-btn.green-btn{background:linear-gradient(135deg,#16a34a,var(--green))}
+.danger-btn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);padding:.8rem 2rem;border-radius:5px;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.danger-btn:hover{background:rgba(239,68,68,.2)}
+
+/* SERVICES TABLE */
+.svc-table{width:100%;border-collapse:collapse}
+.svc-table th{font-family:'Rajdhani',sans-serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sky);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+.svc-table td{padding:.7rem 1rem;border-bottom:1px solid rgba(59,158,255,.08);font-size:.9rem;vertical-align:middle}
+.svc-table tr:last-child td{border-bottom:none}
+.svc-table input{padding:.4rem .7rem;font-size:.88rem;margin:0}
+.svc-badge{display:inline-block;padding:.18rem .7rem;border-radius:2rem;font-family:'Rajdhani',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.svc-badge.motorcycle{background:rgba(59,158,255,.15);color:var(--sky)}
+.svc-badge.bajaj{background:rgba(240,180,41,.15);color:var(--gold)}
+.svc-badge.car{background:rgba(34,197,94,.15);color:var(--green)}
+.svc-badge.carpet{background:rgba(168,85,247,.15);color:#c084fc}
+
+/* PAGE TABS */
+.page{display:none}
+.page.active{display:block}
+
+/* TOKEN DISPLAY */
+.token-display{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:5px;padding:.75rem 1rem;font-family:monospace;font-size:.78rem;color:var(--muted);word-break:break-all;margin-top:.5rem}
+.copy-btn{background:rgba(59,158,255,.1);border:1px solid var(--border);color:var(--sky);padding:.4rem .9rem;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all .2s;margin-top:.6rem}
+.copy-btn:hover{background:rgba(59,158,255,.2)}
+
+/* ALERT */
+.alert{padding:.9rem 1.2rem;border-radius:6px;font-size:.85rem;margin-bottom:1rem;display:none;line-height:1.5}
+.alert.show{display:block}
+.alert.success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:var(--green)}
+.alert.warning{background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.3);color:var(--gold)}
+.alert.error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+
+@media(max-width:768px){
+  .sidebar{width:100%;min-height:auto;position:relative;flex-direction:row;flex-wrap:wrap;padding:.8rem}
+  .main{margin-left:0}
+  .dashboard.show{flex-direction:column}
+  .sb-logo{margin-bottom:.5rem}
+  .sb-label{display:none}
+  .sb-item{padding:.5rem .8rem;font-size:.8rem;border-left:none;border-bottom:2px solid transparent}
+  .sb-item.active{border-bottom-color:var(--accent);border-left:none}
+  .sb-bottom,.sb-mode{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">ZURI<span>.</span>ADMIN</div>
+    <p class="login-sub">Enter your admin password to continue</p>
+    <input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">🔐 Login</button>
+    <p class="login-err" id="loginErr">❌ Incorrect password. Try again.</p>
+    <p style="color:var(--muted);font-size:.74rem;margin-top:1.5rem">Default password: <strong style="color:var(--sky)">zuri2024</strong><br>Change it in Settings after login.</p>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="dashboard" id="dashboard">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">ZURI<span>.</span>ADMIN</div>
+
+    <div class="sb-mode">
+      <div class="mode-label">Current Mode</div>
+      <span class="mode-badge sandbox" id="modeBadge">🧪 Sandbox</span>
+    </div>
+
+    <div class="sb-label">Main</div>
+    <div class="sb-item active" onclick="goTo('overview',this)"><span class="ic">📊</span> Overview</div>
+    <div class="sb-item" onclick="goTo('payment',this)"><span class="ic">💳</span> Payment Gateway</div>
+    <div class="sb-item" onclick="goTo('services',this)"><span class="ic">🚗</span> Services & Prices</div>
+
+    <div class="sb-label">Config</div>
+    <div class="sb-item" onclick="goTo('settings',this)"><span class="ic">⚙️</span> Settings</div>
+
+    <div class="sb-bottom">
+      <a href="index.html" target="_blank" style="display:block;text-align:center;color:var(--sky);font-size:.8rem;text-decoration:none;margin-bottom:1rem;">🌐 View Live Site</a>
+      <button class="sb-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <p style="font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem">Admin Dashboard</p>
+        <h1 class="page-title">ZURI <span>CARWASH</span></h1>
+      </div>
+      <div class="topbar-right">
+        <span id="topMode" style="color:var(--gold)">🧪 Sandbox Mode</span>
+        <span>|</span>
+        <span id="topTime"></span>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="s-label">API Mode</div>
+          <div class="s-value" id="statMode">SANDBOX</div>
+          <div class="s-sub">Testing environment</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="s-label">Services Listed</div>
+          <div class="s-value" id="statServices">12</div>
+          <div class="s-sub">Active services</div>
+        </div>
+        <div class="stat-card green">
+          <div class="s-label">Token Status</div>
+          <div class="s-value" id="statToken">SET</div>
+          <div class="s-sub" id="statTokenSub">API token configured</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">Return URL</div>
+          <div class="s-value" style="font-size:1rem;padding-top:.4rem" id="statUrl">—</div>
+          <div class="s-sub">Customer redirect</div>
+        </div>
+      </div>
+
+      <div class="sec-card">
+        <h3>Quick Setup Guide</h3>
+        <p class="sc-sub">Follow these steps to go live with real payments.</p>
+        <div style="display:flex;flex-direction:column;gap:.8rem">
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border)">
+            <span style="font-size:1.4rem">1️⃣</span>
+            <div><p style="font-weight:600;margin-bottom:.2rem">Add your PawaPay API Token</p><p style="color:var(--muted);font-size:.84rem">Go to <strong>Payment Gateway</strong> → paste your sandbox or production token.</p></div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border)">
+            <span style="font-size:1.4rem">2️⃣</span>
+            <div><p style="font-weight:600;margin-bottom:.2rem">Set your Return URL</p><p style="color:var(--muted);font-size:.84rem">The URL PawaPay redirects customers to after payment (your website URL).</p></div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border)">
+            <span style="font-size:1.4rem">3️⃣</span>
+            <div><p style="font-weight:600;margin-bottom:.2rem">Switch to Live Mode</p><p style="color:var(--muted);font-size:.84rem">Once PawaPay approves you, toggle from Sandbox → Live in Payment Gateway.</p></div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border)">
+            <span style="font-size:1.4rem">4️⃣</span>
+            <div><p style="font-weight:600;margin-bottom:.2rem">Update Service Prices</p><p style="color:var(--muted);font-size:.84rem">Go to <strong>Services & Prices</strong> to update any prices anytime.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT GATEWAY -->
+    <div class="page" id="page-payment">
+      <div id="alertBox" class="alert"></div>
+
+      <div class="sec-card">
+        <h3>Payment Mode</h3>
+        <p class="sc-sub">Switch between sandbox (testing) and live (real money) mode.</p>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="tl">🧪 Sandbox Mode</div>
+            <div class="td">Use test phone numbers. No real money involved.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="sandboxToggle" onchange="toggleMode()"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row" style="border-color:rgba(34,197,94,.25)">
+          <div class="toggle-info">
+            <div class="tl">🟢 Live Mode</div>
+            <div class="td">Real payments. Only enable after PawaPay onboarding is complete.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="liveToggle" onchange="toggleMode(true)"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="sec-card">
+        <h3>API Token — Sandbox</h3>
+        <p class="sc-sub">Your PawaPay sandbox token for testing. Get it from <a href="https://dashboard.sandbox.pawapay.io" target="_blank" style="color:var(--sky)">dashboard.sandbox.pawapay.io</a></p>
+        <div class="fg">
+          <label>Sandbox API Token</label>
+          <input type="password" id="sandboxToken" placeholder="Paste your sandbox token here..."/>
+          <div class="token-display" id="sandboxTokenPreview">No token saved yet.</div>
+          <button class="copy-btn" onclick="copyToken('sandbox')">📋 Copy Token</button>
+        </div>
+        <button class="save-btn" onclick="saveToken('sandbox')">💾 Save Sandbox Token</button>
+      </div>
+
+      <div class="sec-card">
+        <h3>API Token — Production (Live)</h3>
+        <p class="sc-sub">Your live PawaPay token. Only use after completing onboarding. Get it from <a href="https://dashboard.pawapay.io" target="_blank" style="color:var(--sky)">dashboard.pawapay.io</a></p>
+        <div class="fg">
+          <label>Production API Token</label>
+          <input type="password" id="liveToken" placeholder="Paste your production token here..."/>
+          <div class="token-display" id="liveTokenPreview">No token saved yet.</div>
+          <button class="copy-btn" onclick="copyToken('live')">📋 Copy Token</button>
+        </div>
+        <button class="save-btn green-btn" onclick="saveToken('live')">💾 Save Production Token</button>
+      </div>
+
+      <div class="sec-card">
+        <h3>Return URL</h3>
+        <p class="sc-sub">The URL PawaPay sends customers back to after payment. This should be your website URL.</p>
+        <div class="fg">
+          <label>Return URL</label>
+          <input type="text" id="returnUrl" placeholder="https://zuriicarwash.netlify.app"/>
+        </div>
+        <button class="save-btn" onclick="saveReturnUrl()">💾 Save Return URL</button>
+      </div>
+
+      <div class="sec-card">
+        <h3>🧪 Official Sandbox Test Numbers — Tanzania</h3>
+        <p class="sc-sub">Use these numbers from PawaPay's official docs to test payments.</p>
+        <table class="svc-table">
+          <thead><tr><th>Network</th><th>Phone Number</th><th>Expected Result</th></tr></thead>
+          <tbody>
+            <tr><td>Vodacom (VODACOM_TZA)</td><td style="font-family:monospace">255763456789</td><td style="color:var(--green)">✓ COMPLETED</td></tr>
+            <tr><td>Vodacom (VODACOM_TZA)</td><td style="font-family:monospace">255763456129</td><td style="color:var(--sky)">↻ SUBMITTED</td></tr>
+            <tr><td>Vodacom (VODACOM_TZA)</td><td style="font-family:monospace">255763456039</td><td style="color:var(--red)">✗ NOT APPROVED</td></tr>
+            <tr><td>Airtel (AIRTEL_TZA)</td><td style="font-family:monospace">255683456789</td><td style="color:var(--green)">✓ COMPLETED</td></tr>
+            <tr><td>Airtel (AIRTEL_TZA)</td><td style="font-family:monospace">255683456129</td><td style="color:var(--sky)">↻ SUBMITTED</td></tr>
+            <tr><td>Airtel (AIRTEL_TZA)</td><td style="font-family:monospace">255683456039</td><td style="color:var(--red)">✗ NOT APPROVED</td></tr>
+            <tr><td>Tigo (TIGO_TZA)</td><td style="font-family:monospace">255713456789</td><td style="color:var(--green)">✓ COMPLETED</td></tr>
+            <tr><td>Tigo (TIGO_TZA)</td><td style="font-family:monospace">255713456129</td><td style="color:var(--sky)">↻ SUBMITTED</td></tr>
+            <tr><td>Halotel (HALOTEL_TZA)</td><td style="font-family:monospace">255623456789</td><td style="color:var(--green)">✓ COMPLETED</td></tr>
+            <tr><td>Halotel (HALOTEL_TZA)</td><td style="font-family:monospace">255623456129</td><td style="color:var(--sky)">↻ SUBMITTED</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="page" id="page-services">
+      <div id="svcAlert" class="alert"></div>
+      <div class="sec-card">
+        <h3>Services & Prices</h3>
+        <p class="sc-sub">Update your service names and prices below. Changes save to your browser.</p>
+        <table class="svc-table" id="svcTable">
+          <thead><tr><th>Category</th><th>Service Name</th><th>Price (TZS)</th></tr></thead>
+          <tbody id="svcBody"></tbody>
+        </table>
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+          <button class="save-btn" onclick="saveServices()">💾 Save All Prices</button>
+          <button class="danger-btn" onclick="resetServices()">↺ Reset to Default</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div id="settingsAlert" class="alert"></div>
+      <div class="sec-card">
+        <h3>Change Admin Password</h3>
+        <p class="sc-sub">Change your dashboard login password. Keep it safe.</p>
+        <div class="form-row">
+          <div class="fg">
+            <label>Current Password</label>
+            <input type="password" id="curPwd" placeholder="Current password"/>
+          </div>
+          <div class="fg">
+            <label>New Password</label>
+            <input type="password" id="newPwd" placeholder="New password (min 6 chars)"/>
+          </div>
+        </div>
+        <button class="save-btn" onclick="changePwd()">🔐 Update Password</button>
+      </div>
+
+      <div class="sec-card">
+        <h3>Business Info</h3>
+        <p class="sc-sub">Update your business details shown on the site.</p>
+        <div class="form-row">
+          <div class="fg">
+            <label>Business Name</label>
+            <input type="text" id="bizName" placeholder="Zuri Carwash & Garage"/>
+          </div>
+          <div class="fg">
+            <label>Location</label>
+            <input type="text" id="bizLocation" placeholder="Dar es Salaam, Tanzania"/>
+          </div>
+        </div>
+        <button class="save-btn" onclick="saveBizInfo()">💾 Save Business Info</button>
+      </div>
+
+      <div class="sec-card">
+        <h3 style="color:var(--red)">Danger Zone</h3>
+        <p class="sc-sub">Clear all saved settings from this browser. This cannot be undone.</p>
+        <button class="danger-btn" onclick="clearAll()">🗑️ Clear All Settings</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /dashboard -->
+
+<script>
+// ── Default password (stored in localStorage) ──────────
+const DEFAULT_PWD = 'zuri2024';
+
+// ── Default services ───────────────────────────────────
+const DEFAULT_SERVICES = [
+  {id:'m1',name:'Pressure Motorcycle Wash',     price:1000,  cat:'motorcycle'},
+  {id:'m2',name:'Full Motorcycle Wash',         price:2000,  cat:'motorcycle'},
+  {id:'b1',name:'Pressure Bajaj Wash',          price:1500,  cat:'bajaj'},
+  {id:'b2',name:'Only Board Bajaj Wash',        price:2000,  cat:'bajaj'},
+  {id:'b3',name:'Full Bajaj Wash',              price:3000,  cat:'bajaj'},
+  {id:'c1',name:'Pressure Car Wash',            price:4000,  cat:'car'},
+  {id:'c2',name:'Premium Car Wash',             price:10000, cat:'car'},
+  {id:'c3',name:'Partial Car Wash',             price:7000,  cat:'car'},
+  {id:'r1',name:'Big Carpet Wash',              price:25000, cat:'carpet'},
+  {id:'r2',name:'Middle Sized Carpet Wash',     price:18000, cat:'carpet'},
+  {id:'r3',name:'Small Sized Carpet Wash',      price:10000, cat:'carpet'},
+  {id:'r4',name:'Very Small Sized Carpet Wash', price:7000,  cat:'carpet'},
+];
+
+// ── Helpers ────────────────────────────────────────────
+const get = k => localStorage.getItem('zuri_'+k);
+const set = (k,v) => localStorage.setItem('zuri_'+k,v);
+
+function showAlert(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg; el.className='alert '+type+' show';
+  setTimeout(()=>el.classList.remove('show'),4000);
+}
+
+// ── LOGIN ──────────────────────────────────────────────
+function doLogin(){
+  const pwd=document.getElementById('pwdInput').value;
+  const stored=get('password')||DEFAULT_PWD;
+  if(pwd===stored){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('dashboard').classList.add('show');
+    loadAll();
+  } else {
+    document.getElementById('loginErr').classList.add('show');
+    document.getElementById('pwdInput').value='';
+  }
+}
+
+function logout(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('dashboard').classList.remove('show');
+  document.getElementById('pwdInput').value='';
+  document.getElementById('loginErr').classList.remove('show');
+}
+
+// ── NAVIGATION ─────────────────────────────────────────
+function goTo(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── CLOCK ──────────────────────────────────────────────
+function updateClock(){
+  document.getElementById('topTime').textContent=new Date().toLocaleTimeString('en-TZ',{hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
+
+// ── MODE TOGGLE ────────────────────────────────────────
+function toggleMode(isLive){
+  const mode = isLive ? 'live' : 'sandbox';
+  set('mode', mode);
+  document.getElementById('sandboxToggle').checked = mode==='sandbox';
+  document.getElementById('liveToggle').checked    = mode==='live';
+  updateModeUI(mode);
+  showAlert('alertBox', mode==='live'
+    ? '🟢 Switched to LIVE mode. Real payments will be processed!'
+    : '🧪 Switched to SANDBOX mode. Use test numbers only.', mode==='live'?'success':'warning');
+}
+
+function updateModeUI(mode){
+  const isLive=mode==='live';
+  document.getElementById('modeBadge').textContent    = isLive?'🟢 Live':'🧪 Sandbox';
+  document.getElementById('modeBadge').className      = 'mode-badge '+(isLive?'live':'sandbox');
+  document.getElementById('topMode').textContent      = isLive?'🟢 Live Mode':'🧪 Sandbox Mode';
+  document.getElementById('topMode').style.color      = isLive?'var(--green)':'var(--gold)';
+  document.getElementById('statMode').textContent     = isLive?'LIVE':'SANDBOX';
+  document.getElementById('sandboxToggle').checked    = !isLive;
+  document.getElementById('liveToggle').checked       = isLive;
+}
+
+// ── TOKEN ──────────────────────────────────────────────
+function saveToken(type){
+  const val=document.getElementById(type==='sandbox'?'sandboxToken':'liveToken').value.trim();
+  if(!val) return showAlert('alertBox','Please paste a token first.','error');
+  set(type+'Token', val);
+  updateTokenPreview(type);
+  showAlert('alertBox','✅ '+( type==='sandbox'?'Sandbox':'Production')+' token saved!','success');
+  document.getElementById(type==='sandbox'?'sandboxToken':'liveToken').value='';
+  updateOverview();
+}
+
+function updateTokenPreview(type){
+  const token=get(type+'Token');
+  const el=document.getElementById(type+'TokenPreview');
+  if(token) el.textContent=token.substring(0,40)+'...'+token.slice(-20);
+  else el.textContent='No token saved yet.';
+}
+
+function copyToken(type){
+  const token=get(type+'Token');
+  if(!token) return showAlert('alertBox','No token saved yet.','error');
+  navigator.clipboard.writeText(token).then(()=>showAlert('alertBox','📋 Token copied!','success'));
+}
+
+// ── RETURN URL ─────────────────────────────────────────
+function saveReturnUrl(){
+  const val=document.getElementById('returnUrl').value.trim();
+  if(!val) return showAlert('alertBox','Please enter a URL.','error');
+  set('returnUrl',val);
+  showAlert('alertBox','✅ Return URL saved!','success');
+  updateOverview();
+}
+
+// ── SERVICES ───────────────────────────────────────────
+function getServices(){
+  const saved=get('services');
+  return saved?JSON.parse(saved):DEFAULT_SERVICES;
+}
+
+function renderServicesTable(){
+  const svcs=getServices();
+  document.getElementById('svcBody').innerHTML=svcs.map(s=>`
+    <tr>
+      <td><span class="svc-badge ${s.cat}">${s.cat}</span></td>
+      <td><input type="text" value="${s.name}" id="sn_${s.id}" style="min-width:200px"/></td>
+      <td><input type="number" value="${s.price}" id="sp_${s.id}" style="width:120px"/></td>
+    </tr>`).join('');
+}
+
+function saveServices(){
+  const svcs=getServices().map(s=>({
+    ...s,
+    name:  document.getElementById('sn_'+s.id).value.trim()||s.name,
+    price: parseInt(document.getElementById('sp_'+s.id).value)||s.price,
+  }));
+  set('services',JSON.stringify(svcs));
+  document.getElementById('statServices').textContent=svcs.length;
+  showAlert('svcAlert','✅ Services and prices saved!','success');
+}
+
+function resetServices(){
+  if(!confirm('Reset all services to defaults?')) return;
+  localStorage.removeItem('zuri_services');
+  renderServicesTable();
+  showAlert('svcAlert','↺ Services reset to defaults.','warning');
+}
+
+// ── SETTINGS ───────────────────────────────────────────
+function changePwd(){
+  const cur=document.getElementById('curPwd').value;
+  const nw =document.getElementById('newPwd').value;
+  const stored=get('password')||DEFAULT_PWD;
+  if(cur!==stored) return showAlert('settingsAlert','❌ Current password is incorrect.','error');
+  if(nw.length<6)  return showAlert('settingsAlert','❌ New password must be at least 6 characters.','error');
+  set('password',nw);
+  document.getElementById('curPwd').value='';
+  document.getElementById('newPwd').value='';
+  showAlert('settingsAlert','✅ Password updated successfully!','success');
+}
+
+function saveBizInfo(){
+  set('bizName',    document.getElementById('bizName').value.trim());
+  set('bizLocation',document.getElementById('bizLocation').value.trim());
+  showAlert('settingsAlert','✅ Business info saved!','success');
+}
+
+function clearAll(){
+  if(!confirm('Clear ALL saved settings? This cannot be undone.')) return;
+  ['mode','sandboxToken','liveToken','returnUrl','services','password','bizName','bizLocation']
+    .forEach(k=>localStorage.removeItem('zuri_'+k));
+  showAlert('settingsAlert','🗑️ All settings cleared.','warning');
+  loadAll();
+}
+
+// ── OVERVIEW ───────────────────────────────────────────
+function updateOverview(){
+  const st=get('sandboxToken');
+  const lt=get('liveToken');
+  const ru=get('returnUrl')||'Not set';
+  const mode=get('mode')||'sandbox';
+  const token=mode==='live'?lt:st;
+  document.getElementById('statToken').textContent   = token?'SET':'MISSING';
+  document.getElementById('statTokenSub').textContent= token?'Token configured':'No token saved yet';
+  document.getElementById('statUrl').textContent     = (ru.replace('https://','').substring(0,22))||'—';
+  document.getElementById('statServices').textContent= getServices().length;
+}
+
+// ── LOAD ALL ───────────────────────────────────────────
+function loadAll(){
+  const mode=get('mode')||'sandbox';
+  updateModeUI(mode);
+  updateTokenPreview('sandbox');
+  updateTokenPreview('live');
+  const ru=get('returnUrl')||'https://zuriicarwash.netlify.app';
+  document.getElementById('returnUrl').value=ru;
+  document.getElementById('bizName').value=get('bizName')||'Zuri Carwash & Garage';
+  document.getElementById('bizLocation').value=get('bizLocation')||'Tanzania';
+  renderServicesTable();
+  updateOverview();
+}
+</script>
+</body>
+</html>
