@@ -201,6 +201,37 @@ footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1re
       </div>
     </div>
 
+    <div class="test-box">
+      <h4>🧪 Sandbox Test Numbers (use these to test payments)</h4>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">In sandbox mode, only PawaPay's official test MSISDNs work — real phone numbers will be rejected. Click a number to auto-fill it.</p>
+      <div class="tgrid">
+        <div class="tn">
+          <span class="net">📶 Vodacom (VODACOM_TZA)</span>
+          <div onclick="fillTest('255763456789','VODACOM_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255763456789</span> <span class="ok">✓ COMPLETED</span></div>
+          <div onclick="fillTest('255763456129','VODACOM_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255763456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
+          <div onclick="fillTest('255763456039','VODACOM_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255763456039</span> <span class="fail">✗ DECLINED</span></div>
+        </div>
+        <div class="tn">
+          <span class="net">📶 Airtel (AIRTEL_TZA)</span>
+          <div onclick="fillTest('255683456789','AIRTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255683456789</span> <span class="ok">✓ COMPLETED</span></div>
+          <div onclick="fillTest('255683456129','AIRTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255683456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
+          <div onclick="fillTest('255683456069','AIRTEL_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255683456069</span> <span class="fail">✗ FAILED</span></div>
+        </div>
+        <div class="tn">
+          <span class="net">📶 Tigo (TIGO_TZA)</span>
+          <div onclick="fillTest('255713456789','TIGO_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255713456789</span> <span class="ok">✓ COMPLETED</span></div>
+          <div onclick="fillTest('255713456129','TIGO_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255713456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
+          <div onclick="fillTest('255713456069','TIGO_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255713456069</span> <span class="fail">✗ FAILED</span></div>
+        </div>
+        <div class="tn">
+          <span class="net">📶 Halotel (HALOTEL_TZA)</span>
+          <div onclick="fillTest('255623456789','HALOTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255623456789</span> <span class="ok">✓ COMPLETED</span></div>
+          <div onclick="fillTest('255623456129','HALOTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255623456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
+          <div onclick="fillTest('255623456069','HALOTEL_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255623456069</span> <span class="fail">✗ FAILED</span></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -214,8 +245,8 @@ footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1re
 
 <script>
 // ── PawaPay Config ─────────────────────────────────────────────
-const TOKEN     = 'eyJraWQiOiIxIiwiYWxnIjoiRVMyNTYifQ.eyJ0dCI6IkFBVCIsInN1YiI6IjIxNTQzIiwibWF2IjoiMSIsImV4cCI6MjA5NTcxNDk0OCwiaWF0IjoxNzgwMDk1NzQ4LCJwbSI6IkRBRixQQUYiLCJqdGkiOiI5ZjgyNGZjZC0zY2Q5LTRlZGYtYjlmZi1mMTA4YmI4NjdjYTQifQ.KmLylVQ2AslkyssV6qnn-uCxpvU7ncxIFyLLIywCtCCQL8XAkWOm0WMHZHgO2jDkcIXgmwmxAj194cR0XXBQeQ';
-const RETURN_URL= 'https://dhulkiflyselemen025-blip.github.io/zuriicarwash';
+const TOKEN     = 'eyJraWQiOiIxIiwiYWxnIjoiRVMyNTYifQ.eyJ0dCI6IkFBVCIsInN1YiI6IjIxNTQzIiwibWF2IjoiMSIsImV4cCI6MjA5NTcxNjEwNywiaWF0IjoxNzgwMDk2OTA3LCJwbSI6IkRBRixQQUYiLCJqdGkiOiI0ZTgyYTRjMS03ZjY5LTQ1YWMtODZmYi00MzZhMDVmNGE3MjYifQ.DTfQPR4s7SHLhu8-MkOuWm-dYSuqyG_EufTQ5VO6X-t8kCyQFr-lowdylCKRXHD7R1CzoPNM79mGHuB3GWWi4g';
+const RETURN_URL= 'https://dhulkiflyselemen026-blip.github.io/zuriicarwash';
 // Sandbox endpoint — change to https://api.pawapay.io/v1/widget/sessions when going live
 const ENDPOINT  = 'https://api.sandbox.pawapay.io/v1/widget/sessions';
 // corsproxy.io lets the browser call PawaPay directly from a single HTML file
@@ -281,6 +312,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     const v=this.value.replace(/\D/g,'');
     const mn=document.getElementById('mno');
     const h=document.getElementById('hint');
+    // Check if it's a known sandbox test number first
+    if(SANDBOX_NUMS[v]){
+      const d=SANDBOX_NUMS[v];
+      mn.value=d;
+      const nm={VODACOM_TZA:'Vodacom M-Pesa',AIRTEL_TZA:'Airtel Money',TIGO_TZA:'Tigo Pesa',HALOTEL_TZA:'Halopesa'};
+      h.textContent='🧪 Sandbox test number — '+nm[d];
+      h.style.color='#22c55e';
+      h.classList.add('on');
+      return;
+    }
     let d='',fb=false;
     if(v.startsWith('25574')||v.startsWith('25575')||v.startsWith('25576'))           d='VODACOM_TZA';
     else if(v.startsWith('25568')||v.startsWith('25578'))                              d='AIRTEL_TZA';
@@ -291,12 +332,35 @@ document.addEventListener('DOMContentLoaded',()=>{
       mn.value=d;
       const nm={VODACOM_TZA:'Vodacom M-Pesa',AIRTEL_TZA:'Airtel Money',TIGO_TZA:'Tigo Pesa',HALOTEL_TZA:'Halopesa'};
       h.textContent=fb?'⚠️ Network not detected — defaulting to Tigo Pesa. Please confirm above.':'📡 Auto-detected: '+nm[d];
+      h.style.color='';
       h.classList.add('on');
     } else {h.classList.remove('on');}
   });
   const p=new URLSearchParams(window.location.search);
   if(p.get('depositId')) showToast('✅ Payment submitted! Thank you for choosing Zuri Carwash.','success');
 });
+
+// Sandbox test number map — keyed by exact MSISDN
+const SANDBOX_NUMS={
+  '255763456789':'VODACOM_TZA','255763456129':'VODACOM_TZA','255763456039':'VODACOM_TZA','255763456069':'VODACOM_TZA',
+  '255683456789':'AIRTEL_TZA', '255683456129':'AIRTEL_TZA', '255683456069':'AIRTEL_TZA', '255683456019':'AIRTEL_TZA',
+  '255683456039':'AIRTEL_TZA', '255683456049':'AIRTEL_TZA',
+  '255713456789':'TIGO_TZA',   '255713456129':'TIGO_TZA',   '255713456069':'TIGO_TZA',   '255713456039':'TIGO_TZA',
+  '255713456049':'TIGO_TZA',
+  '255623456789':'HALOTEL_TZA','255623456129':'HALOTEL_TZA','255623456069':'HALOTEL_TZA','255623456029':'HALOTEL_TZA',
+  '255623456049':'HALOTEL_TZA',
+};
+
+function fillTest(num, mno){
+  document.getElementById('phone').value = num;
+  document.getElementById('mno').value = mno;
+  const nm={VODACOM_TZA:'Vodacom M-Pesa',AIRTEL_TZA:'Airtel Money',TIGO_TZA:'Tigo Pesa',HALOTEL_TZA:'Halopesa'};
+  const h=document.getElementById('hint');
+  h.textContent='🧪 Sandbox test number — '+nm[mno];
+  h.style.color='#22c55e';
+  h.classList.add('on');
+  document.getElementById('payment').scrollIntoView({behavior:'smooth'});
+}
 
 function uuid(){
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
