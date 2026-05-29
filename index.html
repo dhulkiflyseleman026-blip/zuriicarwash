@@ -201,36 +201,6 @@ footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1re
       </div>
     </div>
 
-    <div class="test-box">
-      <h4>🧪 Sandbox Test Numbers (use these to test payments)</h4>
-      <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">In sandbox mode, only PawaPay's official test MSISDNs work — real phone numbers will be rejected. Click a number to auto-fill it.</p>
-      <div class="tgrid">
-        <div class="tn">
-          <span class="net">📶 Vodacom (VODACOM_TZA)</span>
-          <div onclick="fillTest('255763456789','VODACOM_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255763456789</span> <span class="ok">✓ COMPLETED</span></div>
-          <div onclick="fillTest('255763456129','VODACOM_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255763456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
-          <div onclick="fillTest('255763456039','VODACOM_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255763456039</span> <span class="fail">✗ DECLINED</span></div>
-        </div>
-        <div class="tn">
-          <span class="net">📶 Airtel (AIRTEL_TZA)</span>
-          <div onclick="fillTest('255683456789','AIRTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255683456789</span> <span class="ok">✓ COMPLETED</span></div>
-          <div onclick="fillTest('255683456129','AIRTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255683456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
-          <div onclick="fillTest('255683456069','AIRTEL_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255683456069</span> <span class="fail">✗ FAILED</span></div>
-        </div>
-        <div class="tn">
-          <span class="net">📶 Tigo (TIGO_TZA)</span>
-          <div onclick="fillTest('255713456789','TIGO_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255713456789</span> <span class="ok">✓ COMPLETED</span></div>
-          <div onclick="fillTest('255713456129','TIGO_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255713456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
-          <div onclick="fillTest('255713456069','TIGO_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255713456069</span> <span class="fail">✗ FAILED</span></div>
-        </div>
-        <div class="tn">
-          <span class="net">📶 Halotel (HALOTEL_TZA)</span>
-          <div onclick="fillTest('255623456789','HALOTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255623456789</span> <span class="ok">✓ COMPLETED</span></div>
-          <div onclick="fillTest('255623456129','HALOTEL_TZA')" style="cursor:pointer;margin-bottom:.3rem;" title="Click to use"><span class="num">255623456129</span> <span style="color:#f0b429;font-size:.7rem;">⏳ SUBMITTED</span></div>
-          <div onclick="fillTest('255623456069','HALOTEL_TZA')" style="cursor:pointer;" title="Click to use"><span class="num">255623456069</span> <span class="fail">✗ FAILED</span></div>
-        </div>
-      </div>
-    </div>
 
   </div>
 </section>
@@ -245,8 +215,8 @@ footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1re
 
 <script>
 // ── PawaPay Config ─────────────────────────────────────────────
-const TOKEN     = 'eyJraWQiOiIxIiwiYWxnIjoiRVMyNTYifQ.eyJ0dCI6IkFBVCIsInN1YiI6IjIxNTQzIiwibWF2IjoiMSIsImV4cCI6MjA5NTcxNjEwNywiaWF0IjoxNzgwMDk2OTA3LCJwbSI6IkRBRixQQUYiLCJqdGkiOiI0ZTgyYTRjMS03ZjY5LTQ1YWMtODZmYi00MzZhMDVmNGE3MjYifQ.DTfQPR4s7SHLhu8-MkOuWm-dYSuqyG_EufTQ5VO6X-t8kCyQFr-lowdylCKRXHD7R1CzoPNM79mGHuB3GWWi4g';
-const RETURN_URL= 'https://dhulkiflyselemen026-blip.github.io/zuriicarwash';
+const TOKEN     = 'eyJraWQiOiIxIiwiYWxnIjoiRVMyNTYifQ.eyJ0dCI6IkFBVCIsInN1YiI6IjIxNTQzIiwibWF2IjoiMSIsImV4cCI6MjA5NTcxNzUzMCwiaWF0IjoxNzgwMDk4MzMwLCJwbSI6IkRBRixQQUYiLCJqdGkiOiI3Yzc2NzU0NC1iZDlhLTQ1YzYtYmRlMi1hZGViZTcxNGU2ZmEifQ.iCMu23LJB3TtYHJRBwUddlgIENAzBYmyLmmZXaH_WEvkQ9fxT2sRKrODFdfV_mDZwNXMOsA6S_lSAsMXTENuVQ';
+const RETURN_URL= 'https://dhulkiflyseleman026-blip.github.io/zuriicarwash';
 // Sandbox endpoint — change to https://api.pawapay.io/v1/widget/sessions when going live
 const ENDPOINT  = 'https://api.sandbox.pawapay.io/v1/widget/sessions';
 // corsproxy.io lets the browser call PawaPay directly from a single HTML file
