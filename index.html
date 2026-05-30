@@ -102,7 +102,16 @@ select option{background:var(--navy);color:var(--white)}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{border-color:#22c55e}
 .toast.error{border-color:#ef4444}
-footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.8}
+footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.8}
+.help-box{background:rgba(26,107,255,.07);border:1px solid var(--border);border-radius:10px;padding:2rem;max-width:560px;margin:0 auto 2.5rem}
+.help-box h4{font-family:"Bebas Neue",sans-serif;font-size:1.6rem;letter-spacing:.05em;color:var(--white);margin-bottom:.4rem}
+.help-box p{color:var(--muted);font-size:.84rem;margin-bottom:1.4rem;line-height:1.6}
+.contact-links{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.clink{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:5px;font-family:"Rajdhani",sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.06em;text-decoration:none;transition:transform .2s,box-shadow .2s;text-transform:uppercase}
+.clink:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.clink.call{background:rgba(59,158,255,.15);border:1px solid rgba(59,158,255,.3);color:var(--sky)}
+.clink.email{background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.3);color:var(--gold)}
+.clink.whatsapp{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#22c55e}
 footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:.06em}
 </style>
 </head>
@@ -206,7 +215,21 @@ footer strong{color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1re
 </section>
 
 <footer>
-  <strong>ZURI CARWASH & GARAGE</strong><br>
+  <!-- HELP SECTION -->
+  <div class="help-box">
+    <h4>Need Help? 🙋</h4>
+    <p>Our team is ready to assist you with bookings, payments, or any questions about our services. Reach us via call, email, or WhatsApp!</p>
+    <div class="contact-links">
+      <a href="tel:+255745383986" class="clink call">📞 Call Us</a>
+      <a href="mailto:dhulkiflyseleman026@gmail.com" class="clink email">✉️ Email Us</a>
+      <a href="https://wa.me/255745383986?text=Hello%20Zuri%20Carwash%2C%20I%20need%20help%20with%20my%20booking." target="_blank" class="clink whatsapp">💬 WhatsApp</a>
+    </div>
+    <div style="margin-top:1.2rem;font-size:.78rem;color:var(--muted)">
+      📞 +255 745 383 986 &nbsp;·&nbsp; ✉️ dhulkiflyseleman026@gmail.com
+    </div>
+  </div>
+
+  <strong>ZURI CARWASH AND GARAGE</strong><br>
   Tanzania · Professional Vehicle Care<br>
   <span style="font-size:.76rem;">Payments powered by <a href="https://pawapay.io" target="_blank" style="color:var(--sky);text-decoration:none;">PawaPay</a> · Mobile Money · Secure &amp; Instant</span>
 </footer>
@@ -366,8 +389,8 @@ async function pay(){
     country:              'TZA',
     reason:               'Zuri Carwash Services',
     metadata:[
-      {fieldName:'customerName',fieldValue:name},
-      {fieldName:'services',    fieldValue:names.substring(0,100)},
+      {fieldName:'customerName',fieldValue:name.substring(0,64)},
+      {fieldName:'services',    fieldValue:names.substring(0,64)},
     ],
   };
 
